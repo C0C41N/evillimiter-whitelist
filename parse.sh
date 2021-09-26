@@ -1,6 +1,8 @@
 #! /usr/bin/bash
 
 whitelist=()
+ips=()
+macs=()
 arrId=()
 arrIp=()
 arrMac=()
@@ -8,6 +10,14 @@ arrMac=()
 while read line; do
 	whitelist+=($line)
 done < whitelist.txt
+
+while read line; do
+	macs+=($line)
+done < mac.txt
+
+while read line; do
+	ips+=($line)
+done < ips.txt
 
 while read line; do
   start=${line:0:13}
@@ -49,6 +59,36 @@ while read line; do
 				arrIp+=($ip)
 			fi
 		done
+
+		valid=0
+
+		for i in "${macs[@]}"
+		do
+		  if [ "$i" != "$mac" ]
+			then
+				valid=1
+			fi
+		done
+
+		if [ valid ]
+		then
+			echo $mac>>mac.txt
+		fi
+
+		valid=0
+
+		for i in "${ips[@]}"
+		do
+		  if [ "$i" != "$ip" ]
+			then
+				valid=1
+			fi
+		done
+
+		if [ valid ]
+		then
+			echo $ip>>ip.txt
+		fi
 
 	fi
 done < hosts.txt

@@ -48,7 +48,7 @@ proc go {} {
 			}
 		}
 
-		send -i $sids(1) "limit all 100kbit\r"
+		send -i $sids(1) "block all\r"
 	}
 
 	expect -i $sids(1) "*>>>*" {
@@ -56,7 +56,7 @@ proc go {} {
 	}
 
 	expect -i $sids(1) "*>>>*" {
-		sleep 600000
+		sleep 120000
 		set tpid [exp_pid -i $sids(1)]
 		exec kill -9 $tpid
 	}
