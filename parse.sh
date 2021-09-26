@@ -38,10 +38,7 @@ while read line; do
 
 		# MAC
 
-		mac=${line:51:17}
-		# echo ""
-		# echo "$mac"
-		# echo ""
+		mac=$(echo "${line:51:18}" | xargs)
 
 		for i in "${whitelist[@]}"
 		do
