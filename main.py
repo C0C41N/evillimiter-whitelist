@@ -19,12 +19,6 @@ evil.expect('>>>')
 
 hosts: str = evil.before.decode('utf-8')
 
-#
-# hostsF = open('hosts.txt', '+r')
-# hosts = hostsF.read()
-# hostsF.close()
-#
-
 hostsL: list[str] = hosts.splitlines()
 
 whitelistF = open('whitelist.txt', '+r')
@@ -37,7 +31,6 @@ resourceF = open('resource.txt', '+r')
 resource = resourceF.read()
 resourceF.close()
 
-data: list[dict[str, str]] = []
 data: list[dict[str, str]] = json.loads(resource)
 
 WLID: list[str] = []
@@ -45,8 +38,8 @@ WLID: list[str] = []
 for line in hostsL:
     if line.startswith(begin):
         id = line[13:15].strip('')
-        mac = line[52:69]
-        ip = line[28:44].strip()
+        mac = line[51:69].strip(' ')
+        ip = line[28:44].strip('').strip(' ')
 
         data.append({mac: ip})
 
@@ -57,6 +50,7 @@ for line in hostsL:
 freeCmd = 'free {}'.format(','.join(WLID))
 
 data = removeDup(data)
+data = sorted(data, key=lambda k: list(k.values())[0])
 dataJson = json.dumps(data, indent=2)
 
 resourceF = open('resource.txt', '+w')
