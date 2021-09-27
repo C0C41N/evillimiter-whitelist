@@ -4,7 +4,7 @@
 		{
 			"label": "Run Active File",
 			"type": "shell",
-			"command": "${file}",
+			"command": "sudo ${file}",
 			"problemMatcher": [],
 			"group": {
 				"kind": "build",
