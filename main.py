@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 import sys
+import json
 import pexpect
 from pexpect import EOF
+from func import removeDup
 
 begin = '(0x(B [93m'
 
@@ -31,24 +33,35 @@ whitelistF.close()
 
 whitelistL: list[str] = whitelist.splitlines()
 
-ID: list[str] = []
-IP: list[str] = []
-MAC: list[str] = []
+resourceF = open('resource.txt', '+r')
+resource = resourceF.read()
+resourceF.close()
+
+data: list[dict[str, str]] = []
+data: list[dict[str, str]] = json.loads(resource)
+
 WLID: list[str] = []
 
 for line in hostsL:
     if line.startswith(begin):
         id = line[13:15].strip('')
         mac = line[52:69]
-        ID.append(id)
-        MAC.append(mac)
-        IP.append(line[28:44].strip())
+        ip = line[28:44].strip()
+
+        data.append({mac: ip})
 
         for white in whitelistL:
             if white == mac:
                 WLID.append(id)
 
-freeCmd = 'free ' + ','.join(WLID)
+freeCmd = 'free {}'.format(','.join(WLID))
+
+data = removeDup(data)
+dataJson = json.dumps(data, indent=2)
+
+resourceF = open('resource.txt', '+w')
+resource = resourceF.write(dataJson)
+resourceF.close()
 
 evil.sendline('block all')
 evil.expect('>>>')
